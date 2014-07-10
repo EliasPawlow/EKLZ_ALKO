@@ -1,0 +1,15 @@
+
+Purpose:
+	This is a simple UART example
+	UART0 - 9600bps - 8 data bit - No parity - 1 stop bit - No flow control.
+
+Hardware configuration:
+	This example tested on IAR LPC-1768-SK
+	These jumpers must be configured as following:
+		- DBG_E must be closed and PWR_SEL position depending of power source
+
+Running mode:
+	This example can run on RAM mode with a debugger or run on FLASH.
+	
+Note:
+  None

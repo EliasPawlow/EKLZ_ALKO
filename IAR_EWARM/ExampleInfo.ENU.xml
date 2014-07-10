@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<infocenter_data version="1.0">
+  <iar_name>Project Template</iar_name>                                    <!--App-->
+  <iar_description>The 'Project Template' project is simple program for the LPC1766 using IAR LPC-1768-SK Evaluation Board and demonstrating the use of LPC1700CMSIS library.</iar_description>   <!--App short description-->
+  <iar_curdir>$CUR_DIR$</iar_curdir>
+</infocenter_data>

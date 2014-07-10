@@ -1,0 +1,109 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[DebugChecksum]
+Checksum=-2066345880
+[Exceptions]
+StopOnUncaught=_ 0
+StopOnThrow=_ 0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=0
+[SWOTraceHWSettings]
+OverrideDefaultClocks=0
+CpuClock=12000000
+ClockAutoDetect=1
+ClockWanted=2000000
+JtagSpeed=2000000
+Prescaler=6
+TimeStampPrescIndex=0
+TimeStampPrescData=0
+PcSampCYCTAP=1
+PcSampPOSTCNT=15
+PcSampIndex=0
+DataLogMode=0
+ITMportsEnable=0
+ITMportsTermIO=0
+ITMportsLogFile=0
+ITMlogFile=$PROJ_DIR$\ITM.log
+[DataLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[Trace2]
+Enabled=0
+[SWOTraceWindow]
+PcSampling=0
+InterruptLogs=0
+ForcedTimeStamps=0
+EventCPI=0
+EventEXC=0
+EventFOLD=0
+EventLSU=0
+EventSLEEP=0
+[RecentFlashDownload]
+Path=C:\AK\EKLZ_ALKO\IAR_EWARM\Flash\Exe\LPC1700CMSIS.hex
+[JLinkDriver]
+CStepIntDis=_ 0
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[array_types]
+Fmt0=uint32_t[16]	1	0
+Fmt1=uint32_t[256]	1	0
+[watch_formats]
+Fmt0={W}0:len	3	0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+A0=_ "D:\Program Files\IAR Systems\Embedded Workbench 6.0\arm\CMSIS\Include\core_cm3.h" ""
+A1=_ "E:\Proj\EKLZ_GSM\Drivers\source\lpc17xx_clkpwr.c" ""
+A2=_ "E:\Proj\EKLZ_GSM\Drivers\source\lpc17xx_timer.c" ""
+A3=_ "E:\Proj\EKLZ_GSM\Drivers\source\lpc17xx_uart.c" ""
+A4=_ "E:\Proj\EKLZ_GSM\Modem.c" ""
+A5=_ "E:\Proj\EKLZ_GSM\main.c" ""
+Count=6
+SuppressDialog=0
