@@ -91,6 +91,5 @@ void UART_refresh()
 {
   UART_RCV_COUNT = 0;
   UART_DONE=0;
-  //Int_UART0_Enable();
   Timer_Start();
 }

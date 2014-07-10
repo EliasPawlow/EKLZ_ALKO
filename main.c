@@ -35,10 +35,6 @@ void Write_Buffer(void) {    // Вывод буфера с ответом ЭКЛЗ в кассу
   uint32_t  count;            // Номер байта в буфере для вывода
   uint32_t  tmp;
   
-  //UART_SendByte(UART0, STX);
-     //tmp = 20000;
-     // while(tmp--);
-  //len = data_wr_UART[1] + 3;
   len = 9;
   count = 0;
       while (len) {
@@ -55,10 +51,6 @@ void Write_Buffer(void) {    // Вывод буфера с ответом ЭКЛЗ в кассу
 //=============================================================================
 int c_entry(void)
 {
- // uint8_t Stat,Stat1,Stat2,Stat3,Stat4;
-  uint8_t counter;
-  uint8_t rcvd_byte;
-  Status CmdResult;
   
   Init_Uart_Default(); //Загрузка начальных параметров интерфейсов UART
   Init_Timer0();       // Теперь можно пользоваться таймером и задержками
@@ -75,22 +67,20 @@ int c_entry(void)
   Int_UART0_Enable();  // Разрешение прерывания от UART0
   
   Init_SPI();
-  FPO_check ();   // Проверяем, не надо ли отдать FPO
+  FPO_check();   // Проверяем, не надо ли отдать FPO
   UART_refresh();
   
   while(1) 
   {
     if(UART_DONE==0xff)
     {
-     CmdResult = SendRcvdCmd();             //отправляем в крипто все, что пришло на UART
+     SendRcvdCmd();             //отправляем в крипто все, что пришло на UART
      UART_refresh();            //сбрасываем флаги UART
      Write_Buffer();
     }
   }
 return 1;
 }
-
-
 
 
 

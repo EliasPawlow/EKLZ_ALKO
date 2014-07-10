@@ -18,8 +18,6 @@ void SysTick_Handler(void)  // Обработчик прерываний от SysTick
         if(!UART_RCV_COUNT) Timer_Start();
 	else{ 
              	UART_DONE=0xff;
-           	//Int_UART0_Disable();
-           	//SYSTICK_Cmd(DISABLE);   // Запрещаем таймер
 	    }
 
         }
@@ -39,7 +37,6 @@ void Timer_Init(void) {
 }
 void Timer_Restart(void) {
   msTicks = 0;
-  //Int_UART0_Enable();
 }
 
 void Timer_Start(void) {
@@ -50,7 +47,6 @@ void Timer_Start(void) {
 void Timer_Stop(void) {
   SYSTICK_Cmd(DISABLE);
    msTicks = 0;
-   //UART_TMIO = 0xff;
 }
 /*============== Таймер 0, таймауты обмена с крипто и модемом =============*/
 void Init_Timer0 (void)  // Начальная инициализация таймера таймаута обмена

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-2066345880
+Checksum=1185120241
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -79,6 +79,10 @@ Fmt0=uint32_t[16]	1	0
 Fmt1=uint32_t[256]	1	0
 [watch_formats]
 Fmt0={W}0:len	3	0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -86,18 +90,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=0
-Graph=0
-Symbiont=0
-Exclusions=
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
 [Aliases]
 A0=_ "D:\Program Files\IAR Systems\Embedded Workbench 6.0\arm\CMSIS\Include\core_cm3.h" ""
 A1=_ "E:\Proj\EKLZ_GSM\Drivers\source\lpc17xx_clkpwr.c" ""
@@ -107,3 +99,11 @@ A4=_ "E:\Proj\EKLZ_GSM\Modem.c" ""
 A5=_ "E:\Proj\EKLZ_GSM\main.c" ""
 Count=6
 SuppressDialog=0
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=

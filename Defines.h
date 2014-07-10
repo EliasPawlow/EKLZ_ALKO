@@ -152,6 +152,7 @@ void Int_UART0_Disable(void); // Запрет прерывания от UART0
 void Int_UART1_Enable(void);  // Разрешение прерывания от UART1
 void Int_UART1_Disable(void); // Запрет прерывания от UART1
 uint8_t Get_CRC(unsigned char*, uint32_t); // Контрольная сумма кассовых сообщ.
+void UART_refresh();           // Сброс флагов UART и разрешение приема сообщений
 /* =========   Модуль Timer.c ===================================*/
 void Timer_Init(void);        // Начальная инициализация, интервал 1 ms
 void Timer_Restart(void);     // Сброс текущего интервала
@@ -173,6 +174,10 @@ void Init_Timer0 (void);      // Инициализация таймера обработки таймаута
 uint8_t SPY_Byte (uint8_t byte); //Передача одного байта в SPY
 Status Crypto_Command(uint8_t c_command); //Запрос выполнения команды криптопроц.
 Status W_Wait(uint32_t Delay);
+
+/* =========   Модуль Command.c ====================================*/
+void FPO_check (void);          //проверка, надо ли отдать FPO
+Status SendRcvdCmd();           //передает на СП принятую по UART последовательность байт
 /* =========   Модуль I2C.c ====================================*/
 void I2CInit_0(void);         // Инициализация интерфейса I2C
 /* ==========  Модуль Command.c ================================*/

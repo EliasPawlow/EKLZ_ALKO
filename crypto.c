@@ -59,7 +59,7 @@ Status MUZA_Act(uint8_t len, char *ptr) {
 
 Status MUZA_Close(uint8_t len, char *ptr) {
 
-  uint8_t tmp;
+  
 
   Timer1_Start(1000);           // Установим таймаут 10 сек.
 
@@ -71,7 +71,7 @@ Status MUZA_Close(uint8_t len, char *ptr) {
 
   while (len) {
     if (!WIN()) return ERROR;
-    tmp = SPY_Byte(*ptr++);
+    SPY_Byte(*ptr++);
     len--;
   }
 
@@ -158,7 +158,6 @@ Status MUZA_Status(uint32_t delay) {
   //заполнить read buffer и обратиться к написанной процедуре
  uint32_t  len = 50;
  uint32_t  count=0;
- unsigned char  bb[12];
   Timer1_Start(delay);    // Будем ждать готовности delay/10 сек.
   if (!WIN()) return ERROR;
 
@@ -169,28 +168,12 @@ Status MUZA_Status(uint32_t delay) {
   SPY_Byte(0x04);
   CS_Force(1);
   Timer1_Stop();
-    /*for (count=0;count<254;count++) {
-    data_wr_UART[count] =0x33;
-  }*/
+
   while(!WIN());
    Timer1_Start(delay);    // Будем ждать готовности delay/10 сек.
   if (!WIN()) return ERROR;
   CS_Force(0);
  
-  /*
-  if (MUZA_ReceiveMSG( len_msg_out, out)) 
-   {
-   } else 
-      {
-        if (len_msg_out==0) 
-        {
-            data_wr_UART[1]=0x01; 
-            data_wr_UART[2]=ERR_NO_ANSWER;
-            ALKO.flags &= (~ERR); // Сообщим об ошибке и сбросим флаг ERR
-        }
-      }
- */
-  
  count = 0;   
   while (len) {
       if (!WIN()) return ERROR;
@@ -207,15 +190,10 @@ Status MUZA_Status(uint32_t delay) {
 }
 
 
-
-//--------------------Запрос состояния СП       MUZA_Full_Status	0x06    Нет
-
-
 //---------------------Запрос регистрационного номера 	MUZA_num	0x07    Nom_Excise[0…4]
 
 Status MUZA_num(uint32_t delay) { // Чтение серийного номера
   uint32_t  len = 254;
-  uint32_t  count = 0;
   
    Timer1_Start(delay);         // Будем ждать готовности delay/10 сек.
   
@@ -231,19 +209,7 @@ Status MUZA_num(uint32_t delay) { // Чтение серийного номера
   SPY_Byte(0x06);
  //   if (!WIN()) return ERROR;
      CS_Force(1);       // снимем сигнал CS и дадим принять команду до конца 
-/*  
-      data_wr_UART[count]=SPY_Byte(0x00);
-      count++;
-      data_wr_UART[count]= SPY_Byte(0x00);
-      len = data_wr_UART[count]+1;
-      count++;
-*/
-/*     
-        data_wr_UART[150]=0xf0;
-        data_wr_UART[151]=0xf0;
-        data_wr_UART[152]=0xf0;
-        data_wr_UART[153]=0xf0;
-*/
+
  len_msg_out=0;
   
         if (!WIN()) return ERROR; 
@@ -264,8 +230,6 @@ Status MUZA_num(uint32_t delay) { // Чтение серийного номера
 
 Status MUZA_Save(uint8_t len, char *ptr) {
 
-//  char  *ptr = muza_buff;
-  uint8_t tmp;
   
   Timer1_Start(1000);           // Установим таймаут 10 сек.
 
@@ -278,7 +242,7 @@ Status MUZA_Save(uint8_t len, char *ptr) {
 
   while (len) {
     if (!WIN()) return ERROR;
-    tmp = SPY_Byte(*ptr++);
+    SPY_Byte(*ptr++);
     len--;
   }
 //  while(!( WAIT ));
@@ -503,48 +467,6 @@ Status MUZA_erase(void) {
 
 
 
-//отправка сообщения в СП
-Status MUZA_TransmitMSG( uint8_t len_msg_in, unsigned char *ptr) {
-
-uint8_t count = 0;
-unsigned char byte;
-  
-  Timer1_Start(1000);           // Установим таймаут 10 сек.
-  CS_Force(0);
-
-  while (len_msg_in--) 
-  {
-      byte = SPY_Byte(*ptr++);
-      if (!WIN()) return ERROR;
-      count++;
-  }
-  
-    CS_Force(1);
-    Timer1_Stop();
-  return SUCCESS;
-} 
-  
-//прием сообщения из СП
-Status MUZA_ReceiveMSG(uint8_t len_msg_out, unsigned char *ptr) {
-uint8_t  count = 0;
-unsigned char   byte;
-
-  Timer1_Start(1000);
-  CS_Force(0);
-
-  count = 0;
-  while (len_msg_out--) {
-    if (!WIN()) return ERROR;
-      *ptr++ = SPY_Byte(0x0F);
-      count++;   
-  }
-  len_msg_out = count;
-    Timer1_Stop();
-  CS_Force(1);
-  return SUCCESS;
-}
-
-
 Status MUZA_one(void) {
      Timer1_Start(10);    // Будем ждать готовности 1 сек.
 
@@ -570,22 +492,5 @@ Status MUZA_two(void) {
   CS_Force(1);
 
   Timer1_Stop();
-  return SUCCESS;
-}
-
-// Отправка сообщения в криптопроцессор.
-// @param szMessage - размер отправляемого сообщения в байтах
-// @param p_InMessage - указатель на массив с запросными данными
-// @param p_OutMessage - указатель на массив с результатом
-Status MUZA_SendMessage(uint8_t szMessage,uint8_t *p_InMessage, uint8_t *p_OutMessage)
-{
-  CS_Force_WAIT(0);
-    while(szMessage--)
-    {
-      *p_OutMessage++ = *p_InMessage++;
-      if(!WIN()) return ERROR;
-    }
-  
-  CS_Force_WAIT(1);
   return SUCCESS;
 }
