@@ -75,7 +75,6 @@ int c_entry(void)
     if(UART_DONE==0xff)
     {
      SendRcvdCmd();             //отправляем в крипто все, что пришло на UART
-     //CMD_RCV_COUNT;
      Write_Buffer();
      UART_refresh();            //сбрасываем флаги UART
     }
