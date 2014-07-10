@@ -7,8 +7,6 @@ MAC_num MAC;
 
 uint8_t muza_len;        // длина данных в буфере криптопроцессора
 
-
-
 Status WIN (void);
 // Локальная подпрограмма ожидания WAIT при наличии таймера
 // Если не дождались, таймер останавливаем и CS убираем
@@ -151,7 +149,12 @@ Status MUZA_Status_new()
   data_rd_UART[2] = 0x5;
   data_rd_UART[3] = 0x4;
   //отправка данных
-  return SendRcvdCmd();
+  if(SendRcvdCmd())
+  {
+    muza_stat = cmd_buffer[0];
+    return SUCCESS;
+  }
+  return ERROR;
 }
 
 Status MUZA_Status(uint32_t delay) {

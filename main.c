@@ -35,7 +35,8 @@ void Write_Buffer(void) {    // Вывод буфера с ответом ЭКЛЗ в кассу
   uint32_t  count;            // Номер байта в буфере для вывода
   uint32_t  tmp;
   
-  len = CMD_RCV_COUNT;
+  //пока так, пока выводится мусор из ответа КП
+  len = /*CMD_RCV_COUNT*/ 16;
   count = 0;
       while (len) {
       UART_SendByte(UART0, data_wr_UART[count]);
@@ -44,7 +45,6 @@ void Write_Buffer(void) {    // Вывод буфера с ответом ЭКЛЗ в кассу
       count++;
       len--;
     }
- 
 }
 
 
@@ -75,9 +75,9 @@ int c_entry(void)
     if(UART_DONE==0xff)
     {
      SendRcvdCmd();             //отправляем в крипто все, что пришло на UART
-     UART_refresh();            //сбрасываем флаги UART
-     CMD_RCV_COUNT;
+     //CMD_RCV_COUNT;
      Write_Buffer();
+     UART_refresh();            //сбрасываем флаги UART
     }
   }
 return 1;

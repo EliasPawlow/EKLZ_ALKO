@@ -29,7 +29,9 @@ typedef struct {
 } ALKO_Status;
 
 ALKO_Status ALKO;         // Блок состояния ALKO
+
 uint8_t CMD_RCV_COUNT;
+unsigned char cmd_buffer[256];//буфер ответных кодов команд.
 
 
 // ============================= Отправляет команду на СП из буфера rd_UART и читает ответ в wr_UART ============================================= //
@@ -38,10 +40,13 @@ Status SendRcvdCmd()
   uint8_t length;
   uint16_t delay = 100;
   unsigned char *p_Out = &data_wr_UART[0];
+  unsigned char *p_CmdBuff = &cmd_buffer[0];
   Timer1_Start(2500);      
   
   //-----------очистка буфера от мусора(заполнение нулями)
   memset(data_wr_UART,0,255);
+  //-----------очистка буфера кодов ответа команд--------///
+  memset(cmd_buffer,0,255);
   
   CS_Force(0);                  //активируем SS
   if(WAIT)                      //если перепад при неактивном WAIT
@@ -56,7 +61,7 @@ Status SendRcvdCmd()
   {
      delay = 50;
      while(delay--);
-     SPY_Byte(data_rd_UART[length]);
+     *p_CmdBuff++ = SPY_Byte(data_rd_UART[length]);
   }
   CMD_RCV_COUNT = 0;//очищаем значение счетчика принятых байт 
   
@@ -89,10 +94,10 @@ void FPO_check (void) {
 
       muza_stat = 0;
       while (!(muza_stat & FPO)) { // В итоге бесконечно ждем, пока не появится флаг FPO
-        while (!MUZA_Status(10));    // Ждем готовности криптопроцессора, читаем флаги
+        while (!MUZA_Status_new());    // Ждем готовности криптопроцессора, читаем флаги
       }                           // Выход, когда FPO установлен
       while (! MUZA_FPO(10000));     // Ждем ФПО
       while (muza_stat & FPO)  {    // Ждем готовности, читаем флаги
-        while (!MUZA_Status(10));
+        while (!MUZA_Status_new());
       }
 }

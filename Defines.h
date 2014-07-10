@@ -81,6 +81,7 @@ extern uint8_t UART_TMIO;
 extern uint8_t UART_RCV_COUNT; 
 
 extern uint8_t CMD_RCV_COUNT;
+extern unsigned char cmd_buffer[256];//буфер ответных кодов команд.
 
 extern UART_CFG_Type UART0_Cfg; //Блок конфигурации UART0
 extern UART_CFG_Type UART1_Cfg; //Блок конфигурации UART1
