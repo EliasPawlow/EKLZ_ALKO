@@ -29,6 +29,7 @@ typedef struct {
 } ALKO_Status;
 
 ALKO_Status ALKO;         // Блок состояния ALKO
+uint8_t CMD_RCV_COUNT;
 
 
 // ============================= Отправляет команду на СП из буфера rd_UART и читает ответ в wr_UART ============================================= //
@@ -57,7 +58,8 @@ Status SendRcvdCmd()
      while(delay--);
      SPY_Byte(data_rd_UART[length]);
   }
-    
+  CMD_RCV_COUNT = 0;//очищаем значение счетчика принятых байт 
+  
   CS_Force(1); 
   Timer1_Stop();
   while(!WAIT);  //ждем перепада в 1
@@ -71,6 +73,7 @@ Status SendRcvdCmd()
   for(length=1;length<255;length++)
   {
      *p_Out++ = SPY_Byte(length);
+     CMD_RCV_COUNT++; //принят +1 байт
      delay = 50;
      while(delay--);
      if(WAIT) break;    //если придет WAIT==1, значит пора прекратить прием данных
