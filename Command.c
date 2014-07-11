@@ -81,7 +81,7 @@ Status SendRcvdCmd()
      CMD_RCV_COUNT++; //принят +1 байт
      delay = 50;
      while(delay--);
-     if(WAIT) break;    //если придет WAIT==1, значит пора прекратить прием данных
+    // if(WAIT) break;    //если придет WAIT==1, значит пора прекратить прием данных
   }
   CS_Force(1);
 
@@ -94,10 +94,10 @@ void FPO_check (void) {
 
       muza_stat = 0;
       while (!(muza_stat & FPO)) { // В итоге бесконечно ждем, пока не появится флаг FPO
-        while (!MUZA_Status_new());    // Ждем готовности криптопроцессора, читаем флаги
+        while (!MUZA_Status());    // Ждем готовности криптопроцессора, читаем флаги
       }                           // Выход, когда FPO установлен
-      while (! MUZA_FPO(10000));     // Ждем ФПО
+      while (! MUZA_FPO());     // Ждем ФПО
       while (muza_stat & FPO)  {    // Ждем готовности, читаем флаги
-        while (!MUZA_Status_new());
+        while (!MUZA_Status());
       }
 }

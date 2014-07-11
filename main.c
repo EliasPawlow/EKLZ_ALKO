@@ -87,7 +87,6 @@ return 1;
 /* Support required entry point for other toolchain */
 int main (void)
 {
-       
 	return c_entry();
 }
 

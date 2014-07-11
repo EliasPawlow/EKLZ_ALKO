@@ -140,7 +140,7 @@ Status MUZA_Ver_Software(uint8_t len, char *out) {
 //---------------------Запрос байта состояния	MUZA_Status	        0x05    Нет
 // Запрос состояния криптопроцессора. Если ERROR, то авария, иначе muza_stat 
 
-Status MUZA_Status_new()
+Status MUZA_Status()
 {
   //подготовка данных
   UART_RCV_COUNT = 4;
@@ -157,40 +157,6 @@ Status MUZA_Status_new()
   return ERROR;
 }
 
-Status MUZA_Status(uint32_t delay) {
-  //заполнить read buffer и обратиться к написанной процедуре
- uint32_t  len = 50;
- uint32_t  count=0;
-  Timer1_Start(delay);    // Будем ждать готовности delay/10 сек.
-  if (!WIN()) return ERROR;
-
-  CS_Force(0);
-  muza_stat = SPY_Byte(0x02);
-  SPY_Byte(0x01);
-  SPY_Byte(0x05);   //код запроса
-  SPY_Byte(0x04);
-  CS_Force(1);
-  Timer1_Stop();
-
-  while(!WIN());
-   Timer1_Start(delay);    // Будем ждать готовности delay/10 сек.
-  if (!WIN()) return ERROR;
-  CS_Force(0);
- 
- count = 0;   
-  while (len) {
-      if (!WIN()) return ERROR;
-      data_wr_UART[count] = SPY_Byte(count);
-      //TODO проверить что возвращает. BP
-      count++;
-
-      len--;
-    }
-  CS_Force(1);
-
-  Timer1_Stop();
-  return SUCCESS;   
-}
 
 
 //---------------------Запрос регистрационного номера 	MUZA_num	0x07    Nom_Excise[0…4]
@@ -315,109 +281,73 @@ Status MUZA_Doc(uint8_t *count, unsigned char *ptr) {
   return SUCCESS;
 }
 
-//---------------------Тест целостности ПО	MUZA_Integrity_Software	0x0B	IV[0…7]
-
-//---------------------Чтение буфера 	MUZA_READ_BUF	0x0C	Нет
-
-//---------------------Блок ПО КП	Block_FPO	0x0D	Count[0,1], D[0…63]
-
-
-// Команда передачи ФПО в криптопроцессор
-Status MUZA_FPO(uint32_t delay) {
-    uint32_t i,count;
-    uint8_t byte_send, LRC_msg;
-    uint32_t count2 = 0x2000;            //правильно 0x2000
+//------------------------------Команда передачи ФПО в криптопроцессор--------------------//
+Status MUZA_FPO()
+{
+  uint8_t LRC;                  //контрольная сумма. вычисляется в процессе
+  uint8_t bToSend;              //текущий отправляемый байт в СП
+  uint32_t dwCurrent;           //номер текущей итерации цикла отправки
+  uint32_t dwCount = 0x2000;    //количество итераций цикла отправки = 8192(0х2000)
+  uint8_t bSmallIterator;
+  
+  uint8_t *p_InBuffer;/* = &data_rd_UART[0];*/
+  
+  //повторяем цикл 8192 раза(0х2000)
+  for(dwCurrent=0; dwCurrent<dwCount; dwCurrent++)
+  {
+    p_InBuffer = &data_rd_UART[0];
+    
+    *p_InBuffer++ = 0x02;       //stx
+    *p_InBuffer++ = 0x43;       //длина = 67
+    *p_InBuffer++ = 0x0d;       //команда
+    
+    LRC = 0x4e;                 // LRC = 0xe = 0x43^0x0d
+    bToSend = dwCurrent & 0xff; //текущий отправляемый байт
+    LRC ^= bToSend;
+    *p_InBuffer++ = bToSend;
+    
+    bToSend = (dwCurrent>>8) & 0xff;
+    LRC ^= bToSend;
+    *p_InBuffer++ = bToSend;
+    
+    //подготовка к отправке данных команды
+    for(bSmallIterator=0; bSmallIterator<64; bSmallIterator++)
+    {
+      bToSend = bSmallIterator & 0xff;
+      LRC ^= bToSend;
+      *p_InBuffer++ = bToSend;
+    }
+    //подготовка к отправке LRC
+    *p_InBuffer++ = LRC;
+    
+    //процесс отправки и получения результата
+    UART_RCV_COUNT = 70;
+    SendRcvdCmd();
  
-        Timer1_Start(delay);         // Будем ждать готовности delay/10 сек.
-       for (count=0; count < count2; count++) {        
- //    while ( count < count2) {
-        if (!WIN()) 
-              return ERROR;    // Нет готовности, ждать нечего
-//        printf("Len = %i\n",len);
-        CS_Force(0);
-        muza_stat = SPY_Byte(0x02); // это STX
-        SPY_Byte(0x43);                //байт длины
-		
-	SPY_Byte(0x0D);           //Дадим команду передачи ФПО  - код команды и далее блок DATA-64 байта	
-		LRC_msg = 0x4E;        // =0x43^0x0D
-		byte_send = count & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                     
-			byte_send = (count >> 8) & 0xFF;
-			LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);
-         for (i=0; i<64; i++) {        
-  				byte_send = i & 0xFF;
-	            LRC_msg ^= byte_send;
-             SPY_Byte(byte_send);     
-         }
-         SPY_Byte(LRC_msg);
-        CS_Force(1);
-        
-        if (!WIN()) 
-              return ERROR;    // Нет готовности, ждать нечего
-//        printf("Len = %i\n",len);
-        CS_Force(0);
-        muza_stat = SPY_Byte(0x02); // это STX
-        SPY_Byte(0x43);                //байт длины
-		
-	SPY_Byte(0x0D);           //Дадим команду передачи ФПО  - код команды и далее блок DATA-64 байта	
-		LRC_msg = 0x4E;        // =0x43^0x0D
-		byte_send = count & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                     
-			byte_send = (count >> 8) & 0xFF;
-			LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);
-         for (i=0; i<64; i++) {        
-  				byte_send = i & 0xFF;
-	            LRC_msg ^= byte_send;
-             SPY_Byte(byte_send);     
-         }
-         SPY_Byte(LRC_msg);
-        CS_Force(1);
-        
-  //       count--;      
-        }
-        count = count2;
-        if (!WIN()) 
-              return ERROR;    // Нет готовности, ждать нечего
-//        printf("Len = %i\n",len);
-        CS_Force(0);
-        muza_stat = SPY_Byte(0x02); // это STX
-        SPY_Byte(0x03);                //байт длины
-		
-	SPY_Byte(0x0D);           //Дадим команду передачи ФПО  - код команды и далее блок DATA-64 байта	
-		LRC_msg = 0x0E;        // =0x03^0x0D
-		byte_send = count & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                    
-		byte_send = (count>> 8) & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                 
-        SPY_Byte(LRC_msg);
-        CS_Force(1);
-        if (!WIN()) 
-              return ERROR;    // Нет готовности, ждать нечего
-//        printf("Len = %i\n",len);
-        CS_Force(0);
-        muza_stat = SPY_Byte(0x02); // это STX
-        SPY_Byte(0x03);                //байт длины
-		
-	SPY_Byte(0x0D);           //Дадим команду передачи ФПО  - код команды и далее блок DATA-64 байта	
-		LRC_msg = 0x0E;        // =0x03^0x0D
-		byte_send = count & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                    
-		byte_send = (count>> 8) & 0xFF;
-		LRC_msg ^= byte_send;
-        SPY_Byte(byte_send);                 
-        SPY_Byte(LRC_msg);
-        CS_Force(1);
-   
-          
-     Timer1_Stop();
-     return SUCCESS;
+  }
+  
+  //вторая часть команды
+  p_InBuffer = &data_rd_UART[0];
+  
+  *p_InBuffer++ = 0x02;
+  *p_InBuffer++ = 0x03;
+  *p_InBuffer++ = 0x0D;
+  LRC = 0x0E;
+  
+  bToSend = dwCount & 0xff;
+  LRC ^= bToSend;
+  *p_InBuffer++ = bToSend;
+  
+  bToSend = (dwCount>>8) & 0xff;
+  LRC ^= bToSend;
+  *p_InBuffer++ = bToSend;
+  *p_InBuffer++ = LRC;
+  //отправка и получение результата 2 части команды
+  UART_RCV_COUNT = 6;
+  SendRcvdCmd();
+  
+  return SUCCESS;
+
 }
 
 

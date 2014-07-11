@@ -77,7 +77,6 @@ extern BUF_Status buf_status;        // Состояние буфера приема от кассы
 extern unsigned char time_out;   // Переменная, хранящая текущий таймаут
 
 extern uint8_t UART_DONE;
-extern uint8_t UART_TMIO;
 extern uint8_t UART_RCV_COUNT; 
 
 extern uint8_t CMD_RCV_COUNT;
@@ -181,6 +180,7 @@ Status W_Wait(uint32_t Delay);
 /* =========   Модуль Command.c ====================================*/
 void FPO_check (void);          //проверка, надо ли отдать FPO
 Status SendRcvdCmd();           //передает на СП принятую по UART последовательность байт
+Status MUZA_Status_new();
 /* =========   Модуль I2C.c ====================================*/
 void I2CInit_0(void);         // Инициализация интерфейса I2C
 /* ==========  Модуль Command.c ================================*/

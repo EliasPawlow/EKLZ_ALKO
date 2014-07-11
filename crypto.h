@@ -18,8 +18,7 @@ extern char    muza_mac[3];     // буфер для номера MAC
 
 /* Запрос состояния СП. Если ERROR, то авария, иначе muza_stat 
   переменная delay задает в десятых секунды время ожидания готовности */
-Status MUZA_Status_OLD(uint32_t delay);
-Status MUZA_Status(uint32_t delay);
+Status MUZA_Status();
 /* Стирание памяти. Если время стирания или выход в готовность превышает delay,
 то ошибка */
 Status MUZA_erase(void);
@@ -37,7 +36,7 @@ Status MUZA_num(uint32_t delay); // Чтение серийного номера
 Status MUZA_Test(uint32_t delay); // Тестовая подпрограмма
 Status MUZA_Act(uint8_t len, char *ptr); // Активизация
 Status MUZA_Close(uint8_t len, char *ptr); // Закрытие архива
-Status MUZA_FPO(uint32_t delay);   // Передача ФПО
+Status MUZA_FPO();   // Передача ФПО
 
           //    #define CT 0x2000       //по 64 байта
            //   #define CU 0x0C00       //по 64 байта
